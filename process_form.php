@@ -2,6 +2,9 @@
 
 require_once 'vendor/autoload.php';
 
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__); // Путь к директории, где находится .env файл
+$dotenv->load();
+
 use Twig\Loader\FilesystemLoader;
 use Twig\Environment;
 
