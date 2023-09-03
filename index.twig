@@ -8,7 +8,7 @@
     
     <form action="process_form.php" method="post">
         <label for="region">Регион:</label>
-        <input type="text" id="region" name="region" required><br><br>
+        <input type="text" id="region" name="region"><br><br>
         
         <label for="departure_date">Дата выезда из Москвы:</label>
         <input type="date" id="departure_date" name="departure_date" required><br><br>
@@ -20,3 +20,15 @@
     </form>
 </body>
 </html>
+
+{% if errors is defined and errors|length > 0 %}
+    <ul>
+        {% for error in errors %}
+            <li>{{ error }}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Форма успешно отправлена</p>
+{% endif %}
+
+    
