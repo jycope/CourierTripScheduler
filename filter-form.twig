@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Фильтрованные поездки</title>
+</head>
+<body>
+    <h1>Фильтрованные поездки</h1>
+
+    <form method="POST" action="process_form.php">
+        <!-- Здесь ваши поля фильтрации (начальная и конечная дата) -->
+        <label for="start_date">Начальная дата:</label>
+        <input type="date" name="start_date" id="start_date">
+        
+        <label for="end_date">Конечная дата:</label>
+        <input type="date" name="end_date" id="end_date">
+        
+        <input type="submit" value="Применить фильтр">
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Курьер</th>
+                <th>Регион</th>
+                <th>Дата отправления</th>
+                <th>Дата прибытия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for trip in result %}
+                <tr>
+                    <td>{{ trip.courier_name }}</td>
+                    <td>{{ trip.region_name }}</td>
+                    <td>{{ trip.departure_date }}</td>
+                    <td>{{ trip.arrival_date }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

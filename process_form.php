@@ -10,30 +10,52 @@ use Twig\Environment;
 
 $loader = new FilesystemLoader('/');
 $twig = new Environment($loader);
-$template = $twig->load('index.twig');
 $requestUri = $_SERVER['REQUEST_URI'];
 
-if ($requestUri === '/') {    
-    echo $template->render();
-} 
+class MySQLConnection {
+    public static function connect ()
+    {
+        $conn = new mysqli($_ENV['DB_HOST'], $_ENV['DB_USERNAME'], $_ENV['DB_PASSWORD'], $_ENV['DB_NAME']); 
+        $conn->set_charset("utf8");
+        
+        if ($conn->connect_error) {
+            die("Connection failed: " . $conn->connect_error);
+        }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $region = $_POST["region"];
-    $departureDate = $_POST["departure_date"];
-    $courierName = $_POST["courier_name"];
-
-    $validator = new Validator();
-
-    $validator->validateEmptyField($region);
-    
-    $validator->validateEmptyField($departureDate);
-    $validator->validateDate($departureDate);
-
-    $validator->validateEmptyField($courierName);
-    $validator->validateFIO($courierName);
-    
-    echo $template->render(['errors' => $validator->getErrors()]);
+        return $conn; 
+    }
 }
+
+if ($requestUri === '/') {
+    $formInsert = $twig->load('index.twig');
+    echo $formInsert->render();
+}
+
+if ($requestUri === '/filter-form') {
+    $filterForm = $twig->load('filter-form.twig');
+    echo $filterForm->render();
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {    
+    $startDate = $_POST["start_date"];
+    $endDate = $_POST["end_date"];
+    
+    $sql = "SELECT 
+        c.name AS courier_name,
+        r.name AS region_name,
+        ts.departure_date,
+        ts.arrival_date
+        FROM TripSchedules ts
+        JOIN Couriers c ON ts.courier_id = c.id
+        JOIN Regions r ON ts.region_id = r.id
+        WHERE ts.departure_date BETWEEN '$startDate' AND '$endDate';
+    ";
+
+    $result = MySQLConnection::connect()->query($sql);
+    $filterForm = $twig->load('filter-form.twig');
+    echo $filterForm->render(['result' => $result]);
+}
+
 
 class Validator {
     private $errors = [];
