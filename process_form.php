@@ -37,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $validator->validateEmptyField($courierName);
             $validator->validateFIO($courierName);
             
-            FormRender::render('index.twig');
+            FormRender::render('index.twig', ['errors' => $validator->getErrors()]);
         } elseif ($formType === "filter") {
             $startDate = $_POST["start_date"];
             $endDate = $_POST["end_date"];
