@@ -2,13 +2,15 @@
 
 require_once __DIR__ . '/vendor/autoload.php';
 
+use App\FormRender;
+use App\InsertingData;
+use App\MySQLConnection;
+use App\Validator;
+
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__); // Путь к директории, где находится .env файл
 $dotenv->load();
 $requestUri = $_SERVER['REQUEST_URI'];
-
-use App\FormRender;
-use App\MySQLConnection;
-use App\Validator;
+$dbconnect = MySQLConnection::connect();
 
 if ($requestUri === '/') {
     FormRender::render('index.twig');
@@ -26,6 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $region = $_POST["region"];
             $departureDate = $_POST["departure_date"];
             $courierName = $_POST["courier_name"];
+            $arrivalDate = (new DateTime($departureDate))->modify('+5 days')->format("Y-m-d");
         
             $validator = new Validator();
         
@@ -36,6 +39,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
             $validator->validateEmptyField($courierName);
             $validator->validateFIO($courierName);
+
+            InsertingData::insertNewTrip();
             
             FormRender::render('index.twig', ['errors' => $validator->getErrors()]);
         } elseif ($formType === "filter") {
@@ -53,9 +58,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 WHERE ts.departure_date BETWEEN '$startDate' AND '$endDate';
             ";
 
-            $result = MySQLConnection::connect()->query($sql);
+            $result = $dbconnect->query($sql);
 
-            FormRender::render('filter-form.twig');
+            FormRender::render('filter-form.twig', ['result' => $result]);
         }
     }
 }
