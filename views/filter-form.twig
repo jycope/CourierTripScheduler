@@ -9,7 +9,8 @@
     <h1>Фильтрованные поездки</h1>
 
     <form method="POST" action="process_form.php">
-        <!-- Здесь ваши поля фильтрации (начальная и конечная дата) -->
+        <input type="hidden" name="form_type" value="filter">
+    
         <label for="start_date">Начальная дата:</label>
         <input type="date" name="start_date" id="start_date">
         
