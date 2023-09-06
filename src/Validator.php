@@ -55,4 +55,31 @@ class Validator {
     {
         return $this->errors;
     }
+
+    public function validateHasUnloadingDays(string $region, string $departureDate, string $arrivalDate)
+    {
+        $dbconnect = MySQLConnection::connect(); 
+        $sqlArrivalBusy = "
+            SELECT MAX(ts.arrival_date)
+            FROM TripSchedules ts
+            JOIN Regions r ON ts.region_id = r.id
+            WHERE r.name = '$region'
+            ORDER BY ts.arrival_date DESC;
+        ";
+        $sqlUnloadingDate = $dbconnect
+            ->query("SELECT unloading_days FROM Regions WHERE name = '$region';")
+            ->fetch_row()[0];
+
+        $unloadingEndDate = (new \DateTime($arrivalDate))
+            ->modify("+$sqlUnloadingDate days")
+            ->format("Y-m-d");
+        $arrivalDateBusy = (new \DateTime($dbconnect->query($sqlArrivalBusy)->fetch_row()[0]))
+            ->format("Y-m-d");
+
+        var_dump("$arrivalDateBusy $departureDate $unloadingEndDate");
+
+        if ($departureDate > $arrivalDateBusy && $departureDate < $unloadingEndDate) {
+            $this->errors[] = 'В регионе происходит разгрузка';
+        }
+    }
 }
