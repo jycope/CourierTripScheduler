@@ -12,6 +12,7 @@ CREATE TABLE Couriers (
 CREATE TABLE Regions (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
+    unloading_days INT NOT NULL,
     travel_duration INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -29,17 +30,17 @@ INSERT INTO Couriers (name) VALUES
 ('Курьер 9'),
 ('Курьер 10');
 
-INSERT INTO Regions (name, travel_duration) VALUES
-('Санкт-Петербург', 3),
-('Уфа', 4),
-('Нижний Новгород', 2),
-('Владимир', 1),
-('Кострома', 1),
-('Екатеринбург', 5),
-('Ковров', 2),
-('Воронеж', 3),
-('Самара', 4),
-('Астрахань', 5);
+INSERT INTO Regions (name, travel_duration, unloading_days) VALUES
+('Санкт-Петербург', 3, 1),
+('Уфа', 4, 1),
+('Нижний Новгород', 2, 3),
+('Владимир', 1, 2),
+('Кострома', 1, 3),
+('Екатеринбург', 5, 1),
+('Ковров', 2, 1),
+('Воронеж', 3, 2),
+('Самара', 4, 3),
+('Астрахань', 5, 2);
 CREATE TABLE TripSchedules (
     id INT AUTO_INCREMENT PRIMARY KEY,
     courier_id INT NOT NULL,
