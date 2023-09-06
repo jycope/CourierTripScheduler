@@ -39,14 +39,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $validator->validateDate($departureDate);
         
             $validator->validateEmptyField($courierName);
-            $validator->validateFIO($courierName);
-
-            InsertingData::insertNewTrip();
             
-            FormRender::render('index.twig', ['errors' => $validator->getErrors()]);
+            if ($validator->getErrors()) {
+                FormRender::render('index.twig', ['errors' => $validator->getErrors()]);
+            } else {
+                FormRender::render('index.twig');
+                InsertingData::insertNewTrip();
+            }
         } elseif ($formType === "filter") {
+            $validator = new Validator();
             $startDate = $_POST["start_date"];
             $endDate = $_POST["end_date"];
+
+            $validator->validateEmptyField($startDate);
+            $validator->validateDate($startDate);
+
+            $validator->validateEmptyField($endDate);
+            $validator->validateDate($endDate);
             
             $sql = "SELECT 
                 c.name AS courier_name,
