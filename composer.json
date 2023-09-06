@@ -5,8 +5,6 @@
     },
     "autoload": {
         "files": [
-            "handlers/filter-handler.php",
-            "handlers/insert-handler.php",
             "src/FormRender.php",
             "src/MySQLConnection.php",
             "src/Validator.php",

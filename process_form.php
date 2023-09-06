@@ -31,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $arrivalDate = (new DateTime($departureDate))->modify('+5 days')->format("Y-m-d");
         
             $validator = new Validator();
-            $validator->validateHasUnloadingDays($region, $departureDate, $arrivalDate);
+            $validator->validateHasUnloadingDays($region, $departureDate);
         
             $validator->validateEmptyField($region);
             
