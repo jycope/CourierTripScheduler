@@ -46,7 +46,7 @@
 Установить образ докер и запустить его
 
 ```bash
-  mysql docker build -t mysql_db
+  docker build -t mysql_db .
   docker run mysql_db
 ```
 
